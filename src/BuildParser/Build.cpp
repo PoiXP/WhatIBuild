@@ -1,4 +1,5 @@
 #include "Build.h"
+#include "Logging.h"
 #include <cassert>
 
 namespace WhatIBuild
@@ -16,6 +17,22 @@ Unit::~Unit()
 
 }
 //-----------------------------------------------------------------------------
+Property::Property()
+{
+}
+
+Property::Property(const std::string& name, const std::string& value)
+  : m_Name(name)
+  , m_Value(value)
+{
+}
+
+Property::~Property()
+{
+
+}
+//-----------------------------------------------------------------------------
+
 const size_t Module::INVALID_INDEX = std::numeric_limits<size_t>::max();
 
 Module::Module(const std::string& name, const std::string& path)
@@ -44,11 +61,18 @@ void Module::AddUnit(const Unit& unit)
 {
  if (Lookup(unit.GetPath()) != INVALID_INDEX)
  {
-   //TODO write a log message
+   char buffer[1024];
+   sprintf_s(buffer, sizeof(buffer)-1, "Name collision. Unit with name %s already exists", unit.GetPath());
+   WIBLOG_ERROR(buffer);
  }
 
   m_Lookup[unit.GetPath()] = m_Units.size();
   m_Units.push_back(unit);
+}
+
+void Module::AddProperty(Module::PropertyEnum propertyId, const Property& property)
+{
+  m_Properties[propertyId].AddProperty(property);
 }
 
 //-----------------------------------------------------------------------------
@@ -81,7 +105,6 @@ void Build::AddModule(const Module& module)
   m_Lookup[module.GetName()] = m_Modules.size();
   m_Modules.push_back(module);
 }
-
 
 //-----------------------------------------------------------------------------
 }

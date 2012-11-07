@@ -42,15 +42,15 @@
     <TargetName>$(ProjectName).$(Configuration)</TargetName>
     <OutDir>$(SolutionDir)\..\Bin\</OutDir>
     <IntDir>$(SolutionDir)\Obj\$(Configuration)\$(ProjectName)\</IntDir>
-    <LibraryPath>D:\Project\antons\CodeMonkey\3d party\tinyxml_2_6_2\tinyxml\Releasetinyxml;D:\Project\antons\CodeMonkey\3d party\boost\boost_1_46_1\lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
-    <IncludePath>D:\Project\antons\WhatIBuild\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Project\External\TinyXML\2-6-2\tinyxml\Releasetinyxml;D:\Project\External\boost\1.46.1\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Project\WhatIBuild\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\..\Bin\</OutDir>
     <IntDir>$(SolutionDir)\..\Obj\$(Configuration)\$(ProjectName)\</IntDir>
-    <LibraryPath>D:\Project\antons\CodeMonkey\3d party\tinyxml_2_6_2\tinyxml\Releasetinyxml;D:\Project\antons\CodeMonkey\3d party\boost\boost_1_46_1\lib;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
-    <IncludePath>D:\Project\antons\WhatIBuild\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Project\External\TinyXML\2-6-2\tinyxml\Releasetinyxml;D:\Project\External\boost\1.46.1\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Project\WhatIBuild\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

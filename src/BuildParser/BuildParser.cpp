@@ -19,6 +19,12 @@ public:
   VSProjectParser(const char* path);
   WhatIBuild::ReturnCodeEnum Parse(const std::string& solutionPath, WhatIBuild::Module& module);
 private:
+  void ParseConfigurations(TiXmlNode* root, WhatIBuild::Module& module);
+  void ParseGlobals(TiXmlNode* root, WhatIBuild::Module& module);
+  void ParseConfigurationSettings(TiXmlNode* root, WhatIBuild::Module& module);
+  void ParsePropertySheets(TiXmlNode* root, WhatIBuild::Module& module);
+  void ParseFileList(TiXmlNode* root, boost::filesystem::path& directory, WhatIBuild::Module& module);
+  void TransferXmlProperties(TiXmlNode* root, WhatIBuild::Property& property);
   std::string m_Path;
 
 };
@@ -53,41 +59,135 @@ WhatIBuild::ReturnCodeEnum VSProjectParser::Parse(const std::string& solutionPat
     return WhatIBuild::e_Return_ParseError;
   }
 
-  TiXmlNode* itemGroup = project->FirstChild("ItemGroup");
-  while (itemGroup)
+  
+  for (TiXmlElement* element = project->FirstChildElement("ItemGroup"); element; element = element->NextSiblingElement("ItemGroup"))
   {
-    TiXmlNode* node = itemGroup->FirstChild("ClCompile");
-    while (node)
+    if (element->Attribute("Label") == NULL)
     {
-      TiXmlElement* element = node->ToElement();
-      if (element && element->Attribute("Include"))
-      {
-        boost::filesystem::path filePath = element->Attribute("Include");
-        boost::filesystem::path completePath = directory;
-        completePath /= filePath;
-        WhatIBuild::Unit unit(filePath.filename().string(), completePath.string());
-        module.AddUnit(unit);
-      }
-      node = itemGroup->IterateChildren(node);
+      ParseFileList(element, directory, module);
     }
-    node = itemGroup->FirstChild("ClInclude");
-    while (node)
+    else if (strcmp(element->Attribute("Label"), "ProjectConfigurations") == 0)
     {
-      TiXmlElement* element = node->ToElement();
-      if (element && element->Attribute("Include"))
-      {
-        boost::filesystem::path filePath = element->Attribute("Include");
-        boost::filesystem::path completePath = directory;
-        completePath /= filePath;
-        WhatIBuild::Unit unit(filePath.filename().string(), completePath.string());
-        module.AddUnit(unit);
-      }
-      node = itemGroup->IterateChildren(node);
+      ParseConfigurations(element, module);
     }
-    itemGroup = project->IterateChildren(itemGroup);
   }
 
+  for (TiXmlElement* element = project->FirstChildElement("PropertyGroup"); element; element = element->NextSiblingElement("PropertyGroup"))
+  {
+    if (element->Attribute("Label") == NULL)
+    {
+      continue;
+    }
+    else if (strcmp(element->Attribute("Label"), "Globals") == 0)
+    {
+      ParseGlobals(element, module);
+    }
+  }
+  for (TiXmlElement* element = project->FirstChildElement("ItemDefinitionGroup"); element; element = element->NextSiblingElement("ItemDefinitionGroup"))
+  {
+    if (element->Attribute("Condition") != NULL)
+    {
+      ParseConfigurationSettings(element, module);
+    }
+  }
+  
+  for (TiXmlElement* element = project->FirstChildElement("ImportGroup"); element; element = element->NextSiblingElement("ImportGroup"))
+  {
+    if (element->Attribute("Label") == NULL)
+    {
+      continue;
+    }
+    else if (strcmp(element->Attribute("Label"), "PropertySheets") == 0)
+    {
+      ParsePropertySheets(element, module);
+    }
+  }
+
+
   return WhatIBuild::e_Return_OK;
+}
+
+void VSProjectParser::ParseConfigurations(TiXmlNode* root, WhatIBuild::Module& module)
+{
+  for (TiXmlElement* element = root->FirstChildElement("ProjectConfiguration"); element; element = element->NextSiblingElement("ProjectConfiguration"))
+  {
+    WhatIBuild::Property configuration("ProjectConfiguration", element->Attribute("Include"));
+    TransferXmlProperties(element, configuration);
+    module.AddProperty(WhatIBuild::Module::e_ProjectConfigurations, configuration);
+  }
+}
+
+void VSProjectParser::ParseGlobals(TiXmlNode* node, WhatIBuild::Module& module)
+{
+  WhatIBuild::Property globals("Globals", "");
+  TransferXmlProperties(node, globals);
+  module.AddProperty(WhatIBuild::Module::e_Globals, globals);
+}
+
+void VSProjectParser::ParseConfigurationSettings(TiXmlNode* node, WhatIBuild::Module& module)
+{
+  TiXmlElement* element = node->ToElement();
+  const char* value = element->Attribute("Condition") != NULL ? element->Attribute("Condition") : "";
+
+  WhatIBuild::Property settings("Condition", value);
+  TransferXmlProperties(node, settings);
+  module.AddProperty(WhatIBuild::Module::e_ConfigurationSettings, settings);
+}
+
+void VSProjectParser::ParsePropertySheets(TiXmlNode* node, WhatIBuild::Module& module)
+{
+  TiXmlElement* element = node->ToElement();
+  const char* value = element->Attribute("Condition") != NULL ? element->Attribute("Condition") : "";
+  WhatIBuild::Property propertySheet("PropertySheets", value);
+
+  for (TiXmlElement* element = node->FirstChildElement("Import"); element; element = element->NextSiblingElement("Import"))
+  {
+    const char* path = element->Attribute("Project") != NULL ? element->Attribute("Project") : "";
+    WhatIBuild::Property import("Import", path);
+    TransferXmlProperties(element, import);
+    propertySheet.AddProperty(import); 
+  }
+
+  module.AddProperty(WhatIBuild::Module::e_PropertySheets, propertySheet);
+}
+
+void VSProjectParser::ParseFileList(TiXmlNode* root, boost::filesystem::path& directory, WhatIBuild::Module& module)
+{
+  static char SectionNames[][32] =
+  {
+    "ClCompile",
+    "ClInclude",
+  };
+
+  static int SECTIONS_COUNT = sizeof(SectionNames) / sizeof(SectionNames[0]);
+
+  for (int sectionIdx = 0; sectionIdx < SECTIONS_COUNT; ++sectionIdx)
+  {
+    for (TiXmlElement* element = root->FirstChildElement(SectionNames[sectionIdx]); element; element = element->NextSiblingElement(SectionNames[sectionIdx]))
+    {
+      if (element->Attribute("Include"))
+      {
+        boost::filesystem::path filePath = element->Attribute("Include");
+        boost::filesystem::path completePath = directory;
+        completePath /= filePath;
+        WhatIBuild::Unit unit(filePath.filename().string(), completePath.string());
+        module.AddUnit(unit);
+      }
+    }
+  }
+}
+
+void VSProjectParser::TransferXmlProperties(TiXmlNode* root, WhatIBuild::Property& property)
+{
+    for (TiXmlElement* element = root->FirstChildElement(); element; element = element->NextSiblingElement())
+    {
+      const char* name = element->Value() != NULL ? element->Value() : "";
+      const char* value = element->GetText() != NULL ? element->GetText() : "";
+      WhatIBuild::Property child(name, value);
+      TransferXmlProperties(element, child);
+
+      property.AddProperty(child);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -266,7 +366,6 @@ WhatIBuild::ReturnCodeEnum VSSolutionParser::ParseProject(std::string& name, std
   }
   return WhatIBuild::e_Return_ParseError;
 }
-
 
 }
 
