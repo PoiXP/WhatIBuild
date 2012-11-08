@@ -43,14 +43,14 @@
     <OutDir>$(SolutionDir)\..\Bin\</OutDir>
     <IntDir>$(SolutionDir)\Obj\$(Configuration)\$(ProjectName)\</IntDir>
     <LibraryPath>D:\Project\External\TinyXML\2-6-2\tinyxml\Releasetinyxml;D:\Project\External\boost\1.46.1\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>D:\Project\WhatIBuild\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Project\WhatIBuild\include;D:\Project\External\boost\1.46.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\..\Bin\</OutDir>
     <IntDir>$(SolutionDir)\..\Obj\$(Configuration)\$(ProjectName)\</IntDir>
     <LibraryPath>D:\Project\External\TinyXML\2-6-2\tinyxml\Releasetinyxml;D:\Project\External\boost\1.46.1\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>D:\Project\WhatIBuild\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Project\WhatIBuild\include;D:\Project\External\boost\1.46.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
