@@ -40,7 +40,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Project\WhatIBuild\include;..\..\External\boost\1.46.1;..\..\External\TinyXML\2-6-2;$(IncludePath)</IncludePath>
+    <IncludePath>..\\include;..\..\External\boost\1.46.1;..\..\External\TinyXML\2-6-2;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)\..\Bin\</OutDir>
     <TargetName>$(ProjectName).$(Configuration)</TargetName>
     <IntDir>$(SolutionDir)\Obj\$(Configuration)\$(ProjectName)\</IntDir>
@@ -48,7 +48,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Project\WhatIBuild\include;..\..\External\boost\1.46.1;..\..\External\TinyXML\2-6-2;$(IncludePath)</IncludePath>
+    <IncludePath>..\\include;..\..\External\boost\1.46.1;..\..\External\TinyXML\2-6-2;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)\..\Bin\</OutDir>
     <IntDir>$(SolutionDir)\Obj\$(Configuration)\$(ProjectName)\</IntDir>
     <LibraryPath>$(LibraryPath)</LibraryPath>
