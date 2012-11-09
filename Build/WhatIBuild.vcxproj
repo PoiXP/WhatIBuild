@@ -42,15 +42,15 @@
     <TargetName>$(ProjectName).$(Configuration)</TargetName>
     <OutDir>$(SolutionDir)\..\Bin\</OutDir>
     <IntDir>$(SolutionDir)\Obj\$(Configuration)\$(ProjectName)\</IntDir>
-    <LibraryPath>D:\Project\External\TinyXML\2-6-2\tinyxml\Releasetinyxml;D:\Project\External\boost\1.46.1\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>D:\Project\WhatIBuild\include;D:\Project\External\boost\1.46.1;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\External\TinyXML\2-6-2\tinyxml\Releasetinyxml;..\..\External\boost\1.46.1\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Project\WhatIBuild\include;..\..\External\boost\1.46.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\..\Bin\</OutDir>
     <IntDir>$(SolutionDir)\..\Obj\$(Configuration)\$(ProjectName)\</IntDir>
-    <LibraryPath>D:\Project\External\TinyXML\2-6-2\tinyxml\Releasetinyxml;D:\Project\External\boost\1.46.1\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>D:\Project\WhatIBuild\include;D:\Project\External\boost\1.46.1;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\External\TinyXML\2-6-2\tinyxml\Releasetinyxml;..\..\External\boost\1.46.1\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Project\WhatIBuild\include;..\..\External\boost\1.46.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -71,7 +71,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
