@@ -42,7 +42,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>..\\include;..\..\External\boost\1.46.1;..\..\External\TinyXML\2-6-2;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)\..\Bin\</OutDir>
-    <TargetName>$(ProjectName).$(Configuration)</TargetName>
+    <TargetName>WhatIBuild.$(Configuration)</TargetName>
     <IntDir>$(SolutionDir)\Obj\$(Configuration)\$(ProjectName)\</IntDir>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -52,6 +52,7 @@
     <OutDir>$(SolutionDir)\..\Bin\</OutDir>
     <IntDir>$(SolutionDir)\Obj\$(Configuration)\$(ProjectName)\</IntDir>
     <LibraryPath>$(LibraryPath)</LibraryPath>
+    <TargetName>WhatIBuild</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
