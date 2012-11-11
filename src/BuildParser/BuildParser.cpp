@@ -197,7 +197,7 @@ public:
   VSSolutionParser(const char* path);
   WhatIBuild::ReturnCodeEnum Parse(WhatIBuild::Build& build);
 private:
-  static const int SUPPORTED_VERSION = 2010;
+  static const int SUPPORTED_VERSION = 11;
   WhatIBuild::ReturnCodeEnum ParseInternal(WhatIBuild::Build& build);
   WhatIBuild::ReturnCodeEnum ParseProject(std::string& name, std::string& path);
   const std::string& GetCurrentLine() const;
@@ -255,25 +255,34 @@ WhatIBuild::ReturnCodeEnum VSSolutionParser::ParseInternal(WhatIBuild::Build& bu
   WhatIBuild::ReturnCodeEnum resultCode = WhatIBuild::e_Return_OK;
   ParseStateEnum parseState = e_Parse_FileVersion;
   std::string line;
+  const char reVersionDefinition[] = "^Microsoft Visual Studio Solution File, Format Version ([\\d\\.]+)$";
+  boost::regex versionDefinition(reVersionDefinition);
+
   while(!m_File.EndOfFile() && parseState != e_Parse_Error)
   {
     switch(parseState)
     {
     case e_Parse_FileVersion:
       {
-        int version;
         ReadNextLine();
-        if (sscanf_s(GetCurrentLine().c_str(), "# Visual Studio %d", &version) == 1)
+        boost::match_results<std::string::const_iterator> query;
+        if (regex_match(GetCurrentLine(), query, versionDefinition ))
         {
-          if (version == SUPPORTED_VERSION)
+          std::string versionText(query[1].first, query[1].second);
+          int versionNumber = (int) atof(versionText.c_str());
+          if (versionNumber == SUPPORTED_VERSION)
           {
-            WIBLOG_INFO( (boost::format("Solution file version: %u is supported") % version).str().c_str() );
+            WIBLOG_INFO( (boost::format("Solution file version: %u is supported") % versionNumber).str().c_str() );
             ReadNextLine();
+            while(GetCurrentLine()[0] == '#') // skip comments
+            {
+              ReadNextLine();
+            }
             parseState = e_Parse_ProjectSection;
           }
           else
           {
-            WIBLOG_ERROR( (boost::format("Not supported solution version: %u, expected %u") % version % SUPPORTED_VERSION).str().c_str() );
+            WIBLOG_ERROR( (boost::format("Not supported solution version: %u, expected %u") % versionNumber % SUPPORTED_VERSION).str().c_str() );
             parseState = e_Parse_Error;
             resultCode = WhatIBuild::e_Return_NotSupportedVersion;
           }
