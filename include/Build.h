@@ -13,8 +13,8 @@ class Unit
 public:
   Unit(const std::string& filename, const std::string& path);
   ~Unit();
-  const char*  GetFileName() const  { return m_Filename.c_str(); }
-  const char*  GetPath() const      { return m_Path.c_str(); }
+  const std::string&  GetFileName() const  { return m_Filename; }
+  const std::string&  GetPath() const      { return m_Path; }
 private:
   std::string m_Filename;
   std::string m_Path;
@@ -27,10 +27,10 @@ public:
   Property(const std::string& name, const std::string& value);
   ~Property();
 
-  const char*       GetName()   const { return m_Name.c_str(); }
-  const char*       GetValue() const  { return m_Value.c_str(); }
-  size_t            GetCount() const  { return m_Properties.size(); }
-  const Property&   GetProperty(size_t index) const
+  const std::string&  GetName()   const { return m_Name; }
+  const std::string&  GetValue() const  { return m_Value; }
+  size_t              GetCount() const  { return m_Properties.size(); }
+  const Property&     GetProperty(size_t index) const
   {
     return m_Properties[index];
   }
@@ -64,10 +64,10 @@ public:
   Module(const std::string& name, const std::string& path);
   ~Module();
 
-  const char*     GetName() const             { return m_Name.c_str(); }
-  const char*     GetPath() const             { return m_Path.c_str(); }
-  const Unit&     GetUnit(size_t index) const { return m_Units[index]; }
-  size_t          GetUnitsCount() const       { return m_Units.size(); }
+  const std::string&     GetName() const             { return m_Name; }
+  const std::string&     GetPath() const             { return m_Path; }
+  const Unit&            GetUnit(size_t index) const { return m_Units[index]; }
+  size_t                 GetUnitsCount() const       { return m_Units.size(); }
   const Property& GetProperty(PropertyEnum propertyId) const
   { 
     return m_Properties[propertyId];
